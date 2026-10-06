@@ -1,0 +1,9 @@
+import{McpServer}from'@modelcontextprotocol/sdk/server/mcp.js';import{StdioServerTransport}from'@modelcontextprotocol/sdk/server/stdio.js';import{z}from'zod';
+const origin=process.env.COMMERCE_API_URL||'http://127.0.0.1:4100';const u=new URL(origin);if(!['127.0.0.1','localhost','[::1]'].includes(u.hostname)||u.username||u.password)throw new Error('Preview MCP only accepts loopback API origin');if(!process.env.COMMERCE_MCP_TOKEN)throw new Error('COMMERCE_MCP_TOKEN required');
+export const server=new McpServer({name:'ai-commerce-os',version:'0.1.0'});
+async function read(path:string){try{const r=await fetch(origin+'/api/v1'+path,{headers:{Authorization:'Bearer '+process.env.COMMERCE_MCP_TOKEN},signal:AbortSignal.timeout(10000)});const b=await r.json();return{content:[{type:'text' as const,text:JSON.stringify(b)}],isError:!r.ok};}catch{return{content:[{type:'text' as const,text:'Commerce API unavailable'}],isError:true};}}
+const annotations={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
+server.registerTool('commerce.products.list',{description:'List authorized product drafts. No platform publish action.',inputSchema:{cursor:z.string().uuid().optional(),limit:z.number().int().min(1).max(100).default(20)},annotations},async({cursor,limit})=>read('/products?limit='+limit+(cursor?'&cursor='+cursor:'')));
+server.registerTool('commerce.products.get',{description:'Read authorized product and source references.',inputSchema:{product_id:z.string().uuid()},annotations},async({product_id})=>read('/products/'+product_id));
+server.registerTool('workflow.runs.get',{description:'Read authorized workflow run state.',inputSchema:{run_id:z.string().uuid()},annotations},async({run_id})=>read('/workflow-runs/'+run_id));
+server.connect(new StdioServerTransport()).catch(()=>{console.error('MCP startup failed');process.exitCode=1;});

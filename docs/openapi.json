@@ -1,0 +1,3471 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AI Commerce OS internal preview",
+    "version": "0.1.0",
+    "description": "Loopback development only. Cookie mutations require X-CSRF-Token from /me. MCP bearer tokens only permit whitelisted read endpoints. Response schema expansion is tracked as contract debt."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:4100/api/v1"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "Health",
+        "summary": "Health",
+        "parameters": [],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/auth/dev-login": {
+      "post": {
+        "operationId": "DevelopmentLogin",
+        "summary": "DevelopmentLogin",
+        "parameters": [],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "role"
+                ],
+                "properties": {
+                  "role": {
+                    "enum": [
+                      "ops",
+                      "owner"
+                    ]
+                  },
+                  "tenant": {
+                    "enum": [
+                      "1",
+                      "2"
+                    ]
+                  },
+                  "client": {
+                    "enum": [
+                      "web",
+                      "native"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "operationId": "CurrentSubject",
+        "summary": "CurrentSubject",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "Logout",
+        "summary": "Logout",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "operationId": "ListProducts",
+        "summary": "ListProducts",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "CreateProduct",
+        "summary": "CreateProduct",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "operationId": "GetProduct",
+        "summary": "GetProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "UpdateProduct",
+        "summary": "UpdateProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/products/{id}/validate": {
+      "post": {
+        "operationId": "ValidateProduct",
+        "summary": "ValidateProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/products/{id}/export": {
+      "post": {
+        "operationId": "ExportManualPackage",
+        "summary": "ExportManualPackage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/approvals": {
+      "get": {
+        "operationId": "ListApprovals",
+        "summary": "ListApprovals",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "RequestApproval",
+        "summary": "RequestApproval",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "product_id"
+                ],
+                "properties": {
+                  "product_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/approvals/{id}/decisions": {
+      "post": {
+        "operationId": "DecideApproval",
+        "summary": "DecideApproval",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "decision"
+                ],
+                "properties": {
+                  "decision": {
+                    "enum": [
+                      "approved",
+                      "rejected"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/packages": {
+      "get": {
+        "operationId": "ListPackages",
+        "summary": "ListPackages",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/audit-entries": {
+      "get": {
+        "operationId": "ListAudit",
+        "summary": "ListAudit",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/capabilities": {
+      "get": {
+        "operationId": "Capabilities",
+        "summary": "Capabilities",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/knowledge-documents": {
+      "get": {
+        "operationId": "ListDocuments",
+        "summary": "ListDocuments",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "CreateDocument",
+        "summary": "CreateDocument",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "body",
+                  "source_ref"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "maxLength": 160
+                  },
+                  "body": {
+                    "type": "string",
+                    "maxLength": 20000
+                  },
+                  "source_ref": {
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/knowledge-documents/{id}": {
+      "get": {
+        "operationId": "GetDocument",
+        "summary": "GetDocument",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/knowledge-documents/{id}/publish": {
+      "post": {
+        "operationId": "PublishDocument",
+        "summary": "PublishDocument",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/ai-runs": {
+      "get": {
+        "operationId": "ListAiRuns",
+        "summary": "ListAiRuns",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "GenerateSuggestion",
+        "summary": "GenerateSuggestion",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "profile",
+                  "prompt",
+                  "source_ids"
+                ],
+                "properties": {
+                  "profile": {
+                    "enum": [
+                      "catalog",
+                      "support"
+                    ]
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "maxLength": 6000
+                  },
+                  "source_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/workflow-runs": {
+      "get": {
+        "operationId": "ListWorkflowRuns",
+        "summary": "ListWorkflowRuns",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "StartWorkflow",
+        "summary": "StartWorkflow",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "product_id"
+                ],
+                "properties": {
+                  "product_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/workflow-runs/{id}": {
+      "get": {
+        "operationId": "GetWorkflowRun",
+        "summary": "GetWorkflowRun",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/workflow-runs/{id}/resume": {
+      "post": {
+        "operationId": "ResumeWorkflow",
+        "summary": "ResumeWorkflow",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/mcp-tokens": {
+      "get": {
+        "operationId": "ListMcpCredentials",
+        "summary": "ListMcpCredentials",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "CreateMcpCredential",
+        "summary": "CreateMcpCredential",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "label"
+                ],
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "maxLength": 80
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/mcp-tokens/{id}/revoke": {
+      "post": {
+        "operationId": "RevokeMcpCredential",
+        "summary": "RevokeMcpCredential",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; response fields documented in shared contracts and implementation. Preview contract."
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Not found or not visible"
+          },
+          "409": {
+            "description": "Version/state/idempotency conflict"
+          },
+          "428": {
+            "description": "Required request header missing"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/catalog-tasks": {
+      "get": {
+        "operationId": "ListCatalogTasks",
+        "summary": "ListCatalogTasks",
+        "description": "Local preview; active workspace membership, ops/owner writes, MCP denied. List latest 30. One JPEG/PNG/WebP <=10MiB, <=40M pixels, single frame, 8 active assets per task, 100 tasks and 200MiB per org. No AI or publication.",
+        "parameters": [],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 30,
+                  "items": {
+                    "$ref": "#/components/schemas/CatalogTaskSummary"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "CreateCatalogTask",
+        "summary": "CreateCatalogTask",
+        "description": "Local preview; active workspace membership, ops/owner writes, MCP denied. List latest 30. One JPEG/PNG/WebP <=10MiB, <=40M pixels, single frame, 8 active assets per task, 100 tasks and 200MiB per org. No AI or publication.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": false,
+            "description": "Required with session cookie; not native Bearer.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "fields"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "fields": {
+                    "$ref": "#/components/schemas/StudioFields"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogTask"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog-tasks/{id}": {
+      "get": {
+        "operationId": "GetCatalogTask",
+        "summary": "GetCatalogTask",
+        "description": "Local preview; active workspace membership, ops/owner writes, MCP denied. List latest 30. One JPEG/PNG/WebP <=10MiB, <=40M pixels, single frame, 8 active assets per task, 100 tasks and 200MiB per org. No AI or publication.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogTask"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "SaveCatalogTask",
+        "summary": "SaveCatalogTask",
+        "description": "Local preview; active workspace membership, ops/owner writes, MCP denied. List latest 30. One JPEG/PNG/WebP <=10MiB, <=40M pixels, single frame, 8 active assets per task, 100 tasks and 200MiB per org. No AI or publication.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": false,
+            "description": "Required with session cookie; not native Bearer.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "fields",
+                  "asset_ids"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "fields": {
+                    "$ref": "#/components/schemas/StudioFields"
+                  },
+                  "asset_ids": {
+                    "type": "array",
+                    "maxItems": 8,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogTask"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog-tasks/{id}/assets": {
+      "post": {
+        "operationId": "UploadMaterial",
+        "summary": "UploadMaterial",
+        "description": "Local preview; active workspace membership, ops/owner writes, MCP denied. List latest 30. One JPEG/PNG/WebP <=10MiB, <=40M pixels, single frame, 8 active assets per task, 100 tasks and 200MiB per org. No AI or publication.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": false,
+            "description": "Required with session cookie; not native Bearer.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogTask"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/media-assets/{id}/preview": {
+      "get": {
+        "operationId": "GetMaterialPreview",
+        "summary": "GetMaterialPreview",
+        "description": "Local preview; active workspace membership, ops/owner writes, MCP denied. List latest 30. One JPEG/PNG/WebP <=10MiB, <=40M pixels, single frame, 8 active assets per task, 100 tasks and 200MiB per org. No AI or publication.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sanitized WebP; private, no-store",
+            "content": {
+              "image/webp": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected request. Domain errors use code/message/details/trace_id/retryable; multipart framework errors may use statusCode/error/message/trace_id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog-tasks/{id}/agent-tasks": {
+      "get": {
+        "operationId": "ListAgentTasks",
+        "summary": "ListAgentTasks",
+        "description": "Lists persisted AI execution tasks for one catalog draft. Tasks pin an immutable catalog input version.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Latest tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 30,
+                  "items": {
+                    "$ref": "#/components/schemas/AgentTask"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "CreateAgentTask",
+        "summary": "CreateAgentTask",
+        "description": "Creates a queued execution record only; it does not itself call a model. If-Match pins the exact catalog draft version. Runtime worker leases, budget reservations, retries and UNKNOWN reconciliation are internal execution contracts.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentTaskCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Persisted queued task; no model execution implied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentTask"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent-tasks/{id}": {
+      "get": {
+        "operationId": "GetAgentTask",
+        "summary": "GetAgentTask",
+        "description": "Returns task state, immutable input identity, budget/cost, attempts and immutable artifact versions. Lease tokens and provider request keys are never exposed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentTask"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProductInput": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "category": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "description": {
+            "default": "",
+            "type": "string",
+            "maxLength": 5000
+          },
+          "source_refs": {
+            "default": "",
+            "type": "string",
+            "maxLength": 2000
+          },
+          "seller_sku": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "amount_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "CNY",
+              "USD",
+              "EUR"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "category",
+          "description",
+          "source_refs",
+          "seller_sku",
+          "amount_minor",
+          "currency"
+        ],
+        "additionalProperties": false
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "trace_id",
+          "retryable"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "retryable": {
+            "type": "boolean"
+          },
+          "details": {}
+        }
+      },
+      "StudioFields": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "default": "",
+            "type": "string",
+            "maxLength": 160
+          },
+          "category": {
+            "default": "",
+            "type": "string",
+            "maxLength": 80
+          },
+          "seller_sku": {
+            "default": "",
+            "type": "string",
+            "maxLength": 80
+          },
+          "price": {
+            "default": "",
+            "type": "string",
+            "maxLength": 30,
+            "pattern": "^(?:\\d{1,7}(?:\\.\\d{0,2})?)?$"
+          },
+          "currency": {
+            "default": "CNY",
+            "type": "string",
+            "enum": [
+              "CNY",
+              "USD",
+              "EUR"
+            ]
+          },
+          "description": {
+            "default": "",
+            "type": "string",
+            "maxLength": 5000
+          },
+          "source_refs": {
+            "default": "",
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "title",
+          "category",
+          "seller_sku",
+          "price",
+          "currency",
+          "description",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      },
+      "MediaAsset": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "mime",
+          "origin",
+          "version",
+          "sha256",
+          "byte_size",
+          "width",
+          "height",
+          "preview_url"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mime": {
+            "enum": [
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ]
+          },
+          "origin": {
+            "const": "original"
+          },
+          "version": {
+            "const": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "byte_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10485760
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "preview_url": {
+            "type": "string"
+          }
+        }
+      },
+      "CatalogTask": {
+        "type": "object",
+        "required": [
+          "id",
+          "state",
+          "version",
+          "fields",
+          "assets",
+          "updated_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "const": "NEEDS_INPUT"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fields": {
+            "$ref": "#/components/schemas/StudioFields"
+          },
+          "assets": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "$ref": "#/components/schemas/MediaAsset"
+            }
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CatalogTaskSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "version",
+          "asset_count",
+          "updated_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "asset_count": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AgentTaskCreate": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "const": "CATALOG_GENERATION"
+          },
+          "budget": {
+            "type": "object",
+            "properties": {
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "CNY",
+                  "USD",
+                  "EUR"
+                ]
+              },
+              "max_amount_micros": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000000000000
+              }
+            },
+            "required": [
+              "currency",
+              "max_amount_micros"
+            ],
+            "additionalProperties": false
+          },
+          "max_attempts": {
+            "default": 2,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          }
+        },
+        "required": [
+          "intent",
+          "budget",
+          "max_attempts"
+        ],
+        "additionalProperties": false
+      },
+      "AgentTask": {
+        "type": "object",
+        "required": [
+          "id",
+          "catalog_task_id",
+          "input_version",
+          "input_digest",
+          "intent",
+          "plan_version",
+          "state",
+          "budget",
+          "max_attempts",
+          "attempt_count",
+          "version",
+          "attempts",
+          "artifacts"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "catalog_task_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "input_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "input_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "intent": {
+            "const": "CATALOG_GENERATION"
+          },
+          "plan_version": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "QUEUED",
+              "RUNNING",
+              "WAITING_RETRY",
+              "WAITING_CONFIRMATION",
+              "SUCCEEDED",
+              "PARTIAL",
+              "FAILED",
+              "UNKNOWN",
+              "CANCELLED"
+            ]
+          },
+          "budget": {
+            "type": "object",
+            "properties": {
+              "currency": {
+                "enum": [
+                  "CNY",
+                  "USD",
+                  "EUR"
+                ]
+              },
+              "max_amount_micros": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "spent_amount_micros": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "reserved_amount_micros": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "max_attempts": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "attempt_count": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "next_attempt_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "last_error_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "last_error_retryable": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "attempts": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "artifacts": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "commerce_session"
+      },
+      "bearerToken": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

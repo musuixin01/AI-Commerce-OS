@@ -1,0 +1,2 @@
+Set DATABASE_URL and POSTGRES_PASSWORD in your terminal environment. Never commit real credentials.
+Local PostgreSQL port: 55432. API: 4100. Web: 5173.

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "AI Commerce OS",
+  "version": "0.1.0",
+  "identifier": "com.aicommerce.os",
+  "build": {
+    "frontendDist": "../fallback",
+    "devUrl": "http://127.0.0.1:5173"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "AI Commerce OS · Local Preview",
+        "width": 1440,
+        "height": 940,
+        "minWidth": 900,
+        "minHeight": 650,
+        "url": "http://127.0.0.1:4100"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://127.0.0.1:4100"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "shortDescription": "AI Commerce OS local preview"
+  }
+}

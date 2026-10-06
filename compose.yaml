@@ -1,0 +1,22 @@
+name: ai-commerce-os
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: commerce
+      POSTGRES_USER: commerce
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run npm run local:setup}
+    ports:
+      - '127.0.0.1:55439:5432'
+    volumes:
+      - commerce_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U commerce -d commerce']
+      interval: 5s
+      retries: 12
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '127.0.0.1:56380:6379'
+volumes:
+  commerce_pg:

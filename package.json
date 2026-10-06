@@ -1,0 +1,39 @@
+{
+  "name": "ai-commerce-os",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "services/api",
+    "packages/contracts"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"npm run dev -w @commerce/api\" \"npm run dev -w @commerce/web\"",
+    "build": "npm run build -w @commerce/api && npm run build -w @commerce/web",
+    "typecheck": "tsc --noEmit -p services/api && tsc --noEmit -p apps/web",
+    "test": "tsx scripts/test-runner.ts unit",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "infra:up": "docker compose up -d",
+    "desktop:dev": "cd apps/desktop && tauri dev",
+    "desktop:build": "node scripts/build-desktop.mjs",
+    "local:setup": "node scripts/local-setup.mjs",
+    "test:e2e": "tsx scripts/test-runner.ts e2e",
+    "format:check": "prettier --check apps/web/src services/api/src packages/contracts/src tests"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@tauri-apps/cli": "^2.9.0",
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.15.0",
+    "concurrently": "^9.2.0",
+    "embedded-postgres": "^17.10.0-beta.17",
+    "prettier": "^3.9.9",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.1",
+    "zod": "^4.6.5"
+  }
+}
