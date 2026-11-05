@@ -4,6 +4,17 @@
 
 **当前阶段：0.1 内部可运行预览，正在验收；尚未生产上线。** 从 [PROJECT_PLAN.md](PROJECT_PLAN.md) 阅读定位；设计入口依次为 [UI/UX](docs/UI_UX_DESIGN.md)、[技术栈](docs/TECH_STACK.md)、[架构](docs/ARCHITECTURE.md)、[数据模型](docs/DATA_MODEL.md)、[目录](docs/PROJECT_STRUCTURE.md)、[任务](docs/TASKS.md)。决策记录在 [docs/adr](docs/adr)。
 
+## 架构总览
+
+<p align="center">
+  <img src="apps/desktop/app-icon.svg" alt="AI Commerce OS 应用图标" width="88">
+</p>
+<p align="center">
+  <img src="docs/assets/commerce-architecture.svg" alt="AI Commerce OS 多端、业务 API、工作流与权限边界架构图" width="100%">
+</p>
+
+<sub>图示依据当前架构与 0.1 实施范围整理。当前版本是内部可运行预览：MCP 为只读 stdio 预览，远程 MCP 与真实平台自动发布尚未启用；这不是生产部署拓扑。</sub>
+
 ## 项目边界
 
 - 一个可配置的 LLM Provider Layer 支撑多岗位工作流；岗位通过权限、工具、知识域和操作策略区别，不创建互不兼容的“员工大脑”。
